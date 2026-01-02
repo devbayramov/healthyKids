@@ -1,98 +1,265 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
-export default function HomeScreen() {
+interface SettingItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  icon: string;
+  type: 'switch' | 'arrow' | 'info';
+  value?: boolean;
+  onPress?: () => void;
+  onToggle?: (value: boolean) => void;
+}
+
+export default function ProfileScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const [notifications, setNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(false);
+  const [language, setLanguage] = useState('English');
+
+  const settings: SettingItem[] = [
+    {
+      id: 'language',
+      title: 'Language',
+      subtitle: language,
+      icon: 'globe',
+      type: 'arrow',
+      onPress: () => {
+        // Language selection logic
+        setLanguage(language === 'English' ? 'Türkçe' : 'English');
+      },
+    },
+    {
+      id: 'theme',
+      title: 'Theme',
+      subtitle: isDark ? 'Dark' : 'Light',
+      icon: isDark ? 'moon.fill' : 'sun.max.fill',
+      type: 'arrow',
+      onPress: () => {
+        // Theme toggle logic would go here
+      },
+    },
+    {
+      id: 'notifications',
+      title: 'Push Notifications',
+      subtitle: 'Receive push notifications',
+      icon: 'bell.fill',
+      type: 'switch',
+      value: notifications,
+      onToggle: setNotifications,
+    },
+    {
+      id: 'email',
+      title: 'Email Notifications',
+      subtitle: 'Receive email updates',
+      icon: 'envelope.fill',
+      type: 'switch',
+      value: emailNotifications,
+      onToggle: setEmailNotifications,
+    },
+    {
+      id: 'privacy',
+      title: 'Privacy',
+      subtitle: 'Manage your privacy settings',
+      icon: 'lock.fill',
+      type: 'arrow',
+    },
+    {
+      id: 'about',
+      title: 'About',
+      subtitle: 'App version 1.0.0',
+      icon: 'info.circle.fill',
+      type: 'info',
+    },
+  ];
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+    <ScrollView
+      style={[styles.container, { backgroundColor: isDark ? Colors.dark.background : Colors.light.background }]}>
+      {/* Profile Header */}
+      <View style={styles.profileHeader}>
+        <View style={styles.avatarWrapper}>
+          <View style={[styles.avatarContainer, { backgroundColor: isDark ? '#2a2a2a' : '#e5e5e5' }]}>
+            <IconSymbol name="person.fill" size={48} color={isDark ? Colors.dark.icon : Colors.light.icon} />
+          </View>
+          <View
+            style={[
+              styles.editIconBadge,
+              {
+                backgroundColor: '#0a7ea4',
+                borderColor: isDark ? Colors.dark.background : Colors.light.background,
+              },
+            ]}>
+            <IconSymbol name="pencil" size={16} color="#ffffff" />
+          </View>
+        </View>
+        <ThemedText type="title" style={styles.profileName}>
+          John Doe
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+        <ThemedText style={styles.profileEmail}>john.doe@example.com</ThemedText>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* Settings List */}
+      <View style={styles.settingsContainer}>
+        {settings.map((setting, index) => (
+          <TouchableOpacity
+            key={setting.id}
+            onPress={setting.onPress}
+            disabled={setting.type === 'switch' || setting.type === 'info'}
+            style={[
+              styles.settingItem,
+              { backgroundColor: isDark ? '#1a1a1a' : '#ffffff' },
+              index === 0 && styles.settingItemFirst,
+              index === settings.length - 1 && styles.settingItemLast,
+            ]}>
+            <View style={[styles.settingIconContainer, { backgroundColor: isDark ? '#2a2a2a' : '#f0f0f0' }]}>
+              <IconSymbol
+                name={setting.icon as any}
+                size={20}
+                color={isDark ? Colors.dark.icon : Colors.light.icon}
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <ThemedText type="defaultSemiBold" style={styles.settingTitle}>
+                {setting.title}
+              </ThemedText>
+              {setting.subtitle && (
+                <ThemedText style={styles.settingSubtitle}>{setting.subtitle}</ThemedText>
+              )}
+            </View>
+            {setting.type === 'switch' && (
+              <Switch
+                value={setting.value}
+                onValueChange={setting.onToggle}
+                trackColor={{ false: '#767577', true: '#0a7ea4' }}
+                thumbColor={setting.value ? '#fff' : '#f4f3f4'}
+              />
+            )}
+            {setting.type === 'arrow' && (
+              <IconSymbol
+                name="chevron.right"
+                size={16}
+                color={isDark ? Colors.dark.icon : Colors.light.icon}
+              />
+            )}
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Logout Button */}
+      <View style={styles.logoutContainer}>
+        <TouchableOpacity
+          style={[styles.logoutButton, { backgroundColor: isDark ? '#2a2a2a' : '#f0f0f0' }]}>
+          <IconSymbol name="arrow.right.square.fill" size={20} color="#ef4444" />
+          <Text style={styles.logoutText}>Log Out</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+  },
+  profileHeader: {
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 32,
+    paddingHorizontal: 24,
+  },
+  avatarWrapper: {
+    position: 'relative',
+    marginBottom: 16,
+  },
+  avatarContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editIconBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+  },
+  profileName: {
+    marginBottom: 4,
+  },
+  profileEmail: {
+    opacity: 0.6,
+    fontSize: 14,
+  },
+  settingsContainer: {
+    paddingHorizontal: 16,
+  },
+  settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e5e5',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  settingItemFirst: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  settingItemLast: {
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    borderBottomWidth: 0,
+  },
+  settingIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  settingContent: {
+    flex: 1,
+  },
+  settingTitle: {
+    marginBottom: 2,
+  },
+  settingSubtitle: {
+    fontSize: 12,
+    opacity: 0.6,
+  },
+  logoutContainer: {
+    paddingHorizontal: 16,
+    marginTop: 32,
+    marginBottom: 32,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+  },
+  logoutText: {
+    color: '#ef4444',
+    fontWeight: '600',
+    marginLeft: 8,
+    fontSize: 16,
   },
 });
+
