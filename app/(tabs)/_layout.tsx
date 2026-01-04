@@ -1,32 +1,36 @@
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { Slot, useRouter, useSegments } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// Azerice başlıklar ve açıklamalar
 const TABS = [
   {
     key: 'healthy',
     label: 'Sağlamlıq',
-    icon: 'healthy.fill',
-    route: '/(tabs)/home',
+    route: '/(tabs)/healthy',
   },
   {
     key: 'home',
     label: 'Əsas',
-    icon: 'home.fill',
-    route: '/(tabs)/index',
+    route: '/(tabs)/home',
   },
   {
     key: 'profile',
     label: 'Profil',
-    icon: 'person.fill',
     route: '/(tabs)/profile',
   },
 ];
 
 export default function CustomTabBarLayout() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState(0);
+  const segments = useSegments();
+  // Aktif tabı route'a görə avtomatik uyğunlaşdır
+  const [activeTab, setActiveTab] = useState(1);
+  useEffect(() => {
+    const idx = TABS.findIndex(tab =>
+      segments?.[segments.length - 1]?.toLowerCase() === tab.key
+    );
+    if (idx >= 0) setActiveTab(idx);
+  }, [segments]);
 
   const handlePress = (idx: number) => {
     setActiveTab(idx);
@@ -35,8 +39,7 @@ export default function CustomTabBarLayout() {
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 1}} />
-      {/* Bottom Bar artık alta sabitlendi */}
+      <Slot />
       <View style={styles.tabBar}>
         {TABS.map((tab, idx) => (
           <TouchableOpacity
@@ -44,15 +47,12 @@ export default function CustomTabBarLayout() {
             style={[
               styles.tabButton,
               activeTab === idx && styles.activeTab,
-              activeTab === idx && {backgroundColor: '#073D3D'}, // seçili tab tund ve belirgin
+              activeTab === idx && { backgroundColor: '#073D3D' },
             ]}
             onPress={() => handlePress(idx)}
             activeOpacity={0.85}
           >
-            <Text style={{
-              color: activeTab === idx ? '#fff' : '#073D3D',
-              fontWeight: 'bold'
-            }}>{tab.label}</Text>
+            <Text style={{ color: activeTab === idx ? '#fff' : '#073D3D', fontWeight: 'bold' }}>{tab.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -63,7 +63,7 @@ export default function CustomTabBarLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D1DEBE', // Genel arka plan
+    backgroundColor: '#D1DEBE',
   },
   tabBar: {
     flexDirection: 'row',
@@ -71,15 +71,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#C7D6B8',
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 24,
-
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     marginHorizontal: 8,
     marginBottom: 0,
     position: 'absolute',
-    bottom: 20,
+    bottom: 0,
     left: 0,
     right: 0,
     elevation: 24,
+    justifyContent: 'center',
   },
   tabButton: {
     paddingVertical: 8,
@@ -90,18 +91,5 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     backgroundColor: '#DAF0E7',
-  },
-  rightTextBox: {
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    backgroundColor: '#C7D6B8',
-    borderRadius: 14,
-    flex: 1,
-  },
-  rightText: {
-    color: '#073D3D',
-    fontWeight: 'bold',
-    fontSize: 15,
-    marginLeft: 18,
   },
 });
