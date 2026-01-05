@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "eventApp",
-    "slug": "eventApp",
+    "name": "healthyKids",
+    "slug": "healthyKids",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "eventapp",
+    "scheme": "healthykids",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
