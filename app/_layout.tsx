@@ -1,11 +1,14 @@
-import CustomNavBar from "@/components/CustomNavBar";
-import { Stack, Tabs } from "expo-router";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
-  return <Tabs tabBar={(props)=><CustomNavBar {...props}/>}>
-    <Tabs.Screen name="healthy" options={{title: "Healthy"}}/>
-    <Tabs.Screen name="index" options={{title: "Home"}}/>
-    <Tabs.Screen name="profile" options={{title: "Profile"}}/>
 
-    </Tabs>;
+  
+  return (
+    <Stack initialRouteName="onboarding/index" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="onboarding/index" />
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="auth/login" />
+      <Stack.Screen name="auth/register" />
+    </Stack>
+  );
 }

@@ -1,16 +1,11 @@
-import { Link } from "expo-router";
-import { useEffect, useState } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
-
+import { router } from "expo-router";
+import { useEffect } from "react";
 
 export default function Index() {
+  // İlk girişdə həmişə onboarding-i göstər.
+  useEffect(() => {
+    router.replace("/onboarding");
+  }, []);
 
-
-
-
-  return (
-    <ScrollView contentContainerStyle={{gap:20,padding:10}}>
-      
-    </ScrollView>
-  );
+  return null;
 }
