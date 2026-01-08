@@ -1,8 +1,10 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Healthy() {
+  const router = useRouter();
   const lineWidth = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -27,10 +29,13 @@ export default function Healthy() {
   return (
     <View style={styles.container}>
       {/* Top Box - Healthy Examination */}
-      <View style={styles.topBox}>
+      <TouchableOpacity
+        style={styles.topBox}
+        onPress={() => router.push("/examination")}
+      >
         <MaterialCommunityIcons name="heart-pulse" size={60} color="#A3C9A8" />
         <Text style={styles.boxTitle}>Tibbi yoxlanışlar</Text>
-      </View>
+      </TouchableOpacity>
 
       {/* Animated Separator Line */}
       <Animated.View
@@ -46,10 +51,13 @@ export default function Healthy() {
       />
 
       {/* Bottom Box - Sport Activities */}
-      <View style={styles.bottomBox}>
+      <TouchableOpacity
+        style={styles.bottomBox}
+        onPress={() => router.push("/sports")}
+      >
         <MaterialCommunityIcons name="dumbbell" size={60} color="#A3C9A8" />
         <Text style={styles.boxTitle}>İdman hərəkətləri</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
