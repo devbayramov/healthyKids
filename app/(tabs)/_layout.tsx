@@ -6,8 +6,9 @@ export default function TabsLayout() {
   return (
     <View style={{ flex: 1, backgroundColor: "#D1DEBE" }}>
       <Tabs initialRouteName="index" screenOptions={{ headerShown: false }} tabBar={(props) => <CustomNavBar {...props} />}>
-        <Tabs.Screen name="healthy" options={{ title: "Sağlamlıq" }} />
         <Tabs.Screen name="index" options={{ title: "Əsas" }} />
+        <Tabs.Screen name="tests" options={{ title: "Testlər" }} />
+        <Tabs.Screen name="healthy" options={{ title: "Sağlamlıq" }} />
         <Tabs.Screen name="profile" options={{ title: "Profil" }} />
       </Tabs>
     </View>

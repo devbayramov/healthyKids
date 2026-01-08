@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from "firebase/firestore";
 
 // Replace these with your Firebase project credentials
 // Get them from: https://console.firebase.google.com/project/YOUR_PROJECT/settings/general
@@ -18,5 +19,8 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication
 export const auth = getAuth(app);
+
+// Initialize Firestore
+export const db = getFirestore(app);
 
 export default app;

@@ -1,10 +1,11 @@
 import PasswordInputField from "@/components/ui/PasswordInputField";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import TextInputField from "@/components/ui/TextInputField";
-import { auth } from "@/services/firebaseConfig";
+import { auth, db } from "@/services/firebaseConfig";
 import { router } from "expo-router";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import React, { useState } from "react";
+import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Register() {
@@ -15,6 +16,16 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace("/(tabs)");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !phone || !email || !password) {
@@ -47,6 +58,16 @@ export default function Register() {
       // Update user profile with first and last name
       await updateProfile(userCredential.user, {
         displayName: `${firstName} ${lastName}`,
+      });
+
+      // Add user to Firestore
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      await setDoc(userDocRef, {
+        firstName,
+        lastName,
+        phone,
+        email,
+        createdAt: new Date().toISOString(),
       });
 
       Alert.alert("Uğurlu", "Qeydiyyat tamamlandı!", [

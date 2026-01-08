@@ -3,14 +3,25 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import TextInputField from "@/components/ui/TextInputField";
 import { auth } from "@/services/firebaseConfig";
 import { router } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import { signInWithEmailAndPassword , onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace("/(tabs)");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -26,8 +37,8 @@ export default function Login() {
 
     setLoading(true);
     try {
-      // Sign in with Firebase Authentication
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      await signInWithEmailAndPassword(auth, email, password);
       router.replace("/(tabs)")
       
     

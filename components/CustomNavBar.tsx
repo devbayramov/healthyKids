@@ -82,7 +82,9 @@ const CustomNavBar: React.FC<BottomTabBarProps> = ({
         return <Feather name="home" size={24} color={color} />;
       case "healthy":
         return <MaterialIcons name="health-and-safety" size={24} color={color} />;
-      case "profile":
+      case "tests":
+        return <MaterialIcons name="quiz" size={24} color={color} />;
+        case "profile":
         return <FontAwesome6 name="circle-user" size={24} color={color} />;
       default:
         return <Feather name="home" size={24} color={color} />;
@@ -104,9 +106,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowOffset: { width: 10, height: 15 },
+    shadowOpacity: 1,
+    shadowRadius: 15,
+    elevation: 5,
   },
   tabItem: {
     flexDirection: "row",
