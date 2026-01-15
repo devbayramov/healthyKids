@@ -1,44 +1,41 @@
-import { useLanguage } from "@/context/LanguageContext";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-interface ExaminationOption {
+interface TestOption {
   id: string;
   title: string;
   icon: string;
   route: string;
 }
 
-export default function Examination() {
-      const { language, setLanguage, t } = useLanguage();
-  
+export default function ArtTests() {
   const router = useRouter();
 
-  const examinations: ExaminationOption[] = [
+  const tests: TestOption[] = [
     {
       id: "1",
-      title: t.eyeExam,
-      icon: "eye",
-      route: "/examination-detail/eye",
+      title: "Rəng Bilikləri",
+      icon: "palette",
+      route: "/tests/art-detail/colors",
     },
     {
       id: "2",
-      title: t.scoliosis,
-      icon: "spine",
-      route: "/examination-detail/scoliosis",
+      title: "Sənət Tarixi",
+      icon: "image-frame",
+      route: "/tests/art-detail/history",
     },
     {
       id: "3",
-      title: t.footExam,
-      icon: "foot-print",
-      route: "/examination-detail/foot",
+      title: "Musiqi Bilikləri",
+      icon: "music",
+      route: "/tests/art-detail/music",
     },
     {
       id: "4",
-      title: t.nerveExam,
-      icon: "brain",
-      route: "/examination-detail/nerve",
+      title: "Yaradıcılıq",
+      icon: "lightbulb-on",
+      route: "/tests/art-detail/creativity",
     },
   ];
 
@@ -49,25 +46,25 @@ export default function Examination() {
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons name="arrow-left" size={28} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t.medicalExaminations}</Text>
+        <Text style={styles.headerTitle}>Sənət Testləri</Text>
         <View style={{ width: 28 }} />
       </View>
 
-      {/* Examination Boxes */}
+      {/* Test Boxes */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {examinations.map((exam) => (
+        {tests.map((test) => (
           <TouchableOpacity
-            key={exam.id}
-            style={styles.examinationBox}
-            onPress={() => router.push(exam.route as any)}
+            key={test.id}
+            style={styles.testBox}
+            onPress={() => router.push(test.route as any)}
           >
             <MaterialCommunityIcons
-              name={exam.icon as any}
+              name={test.icon as any}
               size={50}
               color="#A3C9A8"
             />
             <View style={styles.divider} />
-            <Text style={styles.examinationTitle}>{exam.title}</Text>
+            <Text style={styles.testTitle}>{test.title}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -97,7 +94,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 20,
   },
-  examinationBox: {
+  testBox: {
     backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 15,
     marginBottom: 20,
@@ -116,7 +113,7 @@ const styles = StyleSheet.create({
     width: "80%",
     marginVertical: 12,
   },
-  examinationTitle: {
+  testTitle: {
     fontSize: 16,
     fontWeight: "600",
     color: "#333",

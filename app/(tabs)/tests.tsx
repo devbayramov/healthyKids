@@ -4,10 +4,12 @@ import { useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import TextInputField from "../../components/ui/TextInputField";
 import React, { useEffect, useState } from "react";
-
+import { useLanguage } from "../../context/LanguageContext";
 
 
 export default function Tests() {
+        const { language, setLanguage, t } = useLanguage();
+  
     const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -17,24 +19,24 @@ export default function Tests() {
   }> = [
 
     {
-      title: "IQ Testləri",
+      title: t.iqTests,
       boxes: [
-        { id: 1, icon: "brain", title: "Məntiq", route: "/tests/intelligence" },
-        { id: 2, icon: "calculator", title: "Riyaziyyat", route: "/tests/mathematics" },
+        { id: 1, icon: "brain", title: t.logic, route: "/tests/intelligence" },
+        { id: 2, icon: "calculator", title: t.mathematics, route: "/tests/mathematics" },
       ],
     },
     {
-      title: "Psixologiya Testləri",
+      title: t.psychologyTests,
       boxes: [
-        { id: 3, icon: "thought-bubble", title: "Şəxsiyyət", route: "/tests/personality" },
-        { id: 4, icon: "heart", title: "Emosional", route: "/tests/emotional" },
+        { id: 3, icon: "thought-bubble", title: t.personality, route: "/tests/personality" },
+        { id: 4, icon: "heart", title: t.emotional, route: "/tests/emotional" },
       ],
     },
     {
-      title: "Maraqlı Testlər",
+      title: t.funTests,
       boxes: [
-        { id: 5, icon: "gamepad", title: "Oyun", route: "/tests/game" },
-        { id: 6, icon: "palette", title: "Sənət", route: "/tests/art" },
+        { id: 5, icon: "gamepad", title: t.game, route: "/tests/game" },
+        { id: 6, icon: "palette", title: t.art, route: "/tests/art" },
       ],
     },
   ];
@@ -43,7 +45,7 @@ export default function Tests() {
    <View style={styles.container}>
 
   <View style={styles.header}>
-        <TextInputField placeholder="Test axtar..." style={styles.headerInput}   value={searchQuery}
+        <TextInputField placeholder={t.searchTest} style={styles.headerInput}   value={searchQuery}
  onChangeText={(text) => setSearchQuery(text)} /> 
   </View>
 

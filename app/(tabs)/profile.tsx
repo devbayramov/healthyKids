@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import { auth, db } from "@/services/firebaseConfig";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -9,59 +10,8 @@ import React, { useEffect, useState } from "react";
 import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TextInputField from "../../components/ui/TextInputField";
 
-const translations = {
-  az: {
-    personalInfo: "Şəxsi Məlumat",
-    firstName: "Ad",
-    lastName: "Soyad",
-    age: "Yaş",
-    healthInfo: "Sağlamlıq Məlumatı",
-    weight: "Çəki (kq)",
-    height: "Boy (sm)",
-    settings: "Ayarlar",
-    language: "Dil seçimi",
-    notification: "Bildiriş tənzimləmələri",
-    selectLanguage: "Dil Seçin",
-    azerbaijani: "Azərbaycanca",
-    english: "English",
-    russian: "Русский",
-  },
-  en: {
-    personalInfo: "Personal Information",
-    firstName: "First Name",
-    lastName: "Last Name",
-    age: "Age",
-    healthInfo: "Health Information",
-    weight: "Weight (kg)",
-    height: "Height (cm)",
-    settings: "Settings",
-    language: "Language",
-    notification: "Notification",
-    selectLanguage: "Select Language",
-    azerbaijani: "Azerbaijani",
-    english: "English",
-    russian: "Russian",
-  },
-  ru: {
-    personalInfo: "Личная информация",
-    firstName: "Имя",
-    lastName: "Фамилия",
-    age: "Возраст",
-    healthInfo: "Информация о здоровье",
-    weight: "Вес (кг)",
-    height: "Рост (см)",
-    settings: "Настройки",
-    language: "Язык",
-    notification: "Уведомления",
-    selectLanguage: "Выберите язык",
-    azerbaijani: "Azerbaijani",
-    english: "English",
-    russian: "Русский",
-  },
-};
-
 export default function Profile() {
-  const [language, setLanguage] = useState<"az" | "en" | "ru">("az");
+  const { language, setLanguage, t } = useLanguage();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [userData, setUserData] = useState({
     firstName: "",
@@ -76,7 +26,6 @@ export default function Profile() {
   const [notificationSetting, setNotificationSetting] = useState<"none" | "periodic" | "all">("none");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [notificationOption, setNotificationOption] = useState("all");
-  const t = translations[language];
   const router = useRouter();
 
   useEffect(() => {
@@ -152,6 +101,11 @@ export default function Profile() {
     }
   };
 
+  const handleLanguageChange = (lang: "az" | "en" | "ru") => {
+    setLanguage(lang);
+    setShowLanguageModal(false);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Profile Photo */}
@@ -199,13 +153,13 @@ export default function Profile() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.healthInfo}</Text>
         <TextInputField
-          placeholder={t.weight}
+          placeholder={t.weightKg}
           keyboardType="numeric"
           value={userData.weight}
           onChangeText={(value) => handleInputChange("weight", value)}
         />
         <TextInputField
-          placeholder={t.height}
+          placeholder={t.heightCm}
           keyboardType="numeric"
           value={userData.height}
           onChangeText={(value) => handleInputChange("height", value)}
@@ -214,7 +168,7 @@ export default function Profile() {
 
       {isEditing && (
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit</Text>
+          <Text style={styles.submitButtonText}>{t.save}</Text>
         </TouchableOpacity>
       )}
 
@@ -222,13 +176,13 @@ export default function Profile() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.settings}</Text>
         <View style={styles.settingsRow}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.buttonWrapper}
             onPress={() => setShowLanguageModal(true)}
           >
-            <Text style={styles.settingButtonText}>{t.language}</Text>
+            <Text style={styles.settingButtonText}>{t.selectLanguage}</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.buttonWrapper}
             onPress={() => setShowNotificationModal(true)}
           >
@@ -250,45 +204,36 @@ export default function Profile() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t.selectLanguage}</Text>
-            
-            <TouchableOpacity 
-              style={styles.languageOption}
-              onPress={() => {
-                setLanguage("az");
-                setShowLanguageModal(false);
-              }}
+
+            <TouchableOpacity
+              style={[styles.languageOption, language === "az" && styles.activeLanguage]}
+              onPress={() => handleLanguageChange("az")}
             >
               <Text style={styles.languageOptionText}>{t.azerbaijani}</Text>
               {language === "az" && <MaterialCommunityIcons name="check" size={24} color="#073D3D" />}
             </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.languageOption}
-              onPress={() => {
-                setLanguage("en");
-                setShowLanguageModal(false);
-              }}
+
+            <TouchableOpacity
+              style={[styles.languageOption, language === "en" && styles.activeLanguage]}
+              onPress={() => handleLanguageChange("en")}
             >
               <Text style={styles.languageOptionText}>{t.english}</Text>
               {language === "en" && <MaterialCommunityIcons name="check" size={24} color="#073D3D" />}
             </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.languageOption}
-              onPress={() => {
-                setLanguage("ru");
-                setShowLanguageModal(false);
-              }}
+
+            <TouchableOpacity
+              style={[styles.languageOption, language === "ru" && styles.activeLanguage]}
+              onPress={() => handleLanguageChange("ru")}
             >
               <Text style={styles.languageOptionText}>{t.russian}</Text>
               {language === "ru" && <MaterialCommunityIcons name="check" size={24} color="#073D3D" />}
             </TouchableOpacity>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setShowLanguageModal(false)}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>{t.close}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -308,14 +253,14 @@ export default function Profile() {
               style={[styles.notificationOption, notificationOption === "all" && styles.activeButton]}
               onPress={() => setNotificationOption("all")}
             >
-              <Text style={[styles.notificationOptionText, notificationOption === "all" && styles.activeButton]}>Bütün bildirişlər</Text>
+              <Text style={[styles.notificationOptionText, notificationOption === "all" && styles.activeButtonText]}>{t.allNotifications}</Text>
               {notificationOption === "all" && <MaterialCommunityIcons name="check" size={24} color="#073D3D" />}
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.notificationOption, notificationOption === "periodic" && styles.activeButton]}
               onPress={() => setNotificationOption("periodic")}
             >
-              <Text style={[styles.notificationOptionText, notificationOption === "periodic" && styles.activeButton]}>Mutəmadi yoxlanış bildirişləri</Text>
+              <Text style={[styles.notificationOptionText, notificationOption === "periodic" && styles.activeButtonText]}>{t.periodicCheckups}</Text>
               {notificationOption === "periodic" && <MaterialCommunityIcons name="check" size={24} color="#073D3D" />}
             </TouchableOpacity>
 
@@ -323,17 +268,15 @@ export default function Profile() {
               style={[styles.notificationOption, notificationOption === "tests" && styles.activeButton]}
               onPress={() => setNotificationOption("tests")}
             >
-              <Text style={[styles.notificationOptionText, notificationOption === "tests" && styles.activeButton]}>Yeni testlər və kampaniyalar</Text>
+              <Text style={[styles.notificationOptionText, notificationOption === "tests" && styles.activeButtonText]}>{t.newTestsCampaigns}</Text>
               {notificationOption === "tests" && <MaterialCommunityIcons name="check" size={24} color="#073D3D" />}
             </TouchableOpacity>
-
-
 
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setShowNotificationModal(false)}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>{t.close}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -345,7 +288,7 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 25,
     backgroundColor: "#D1DEBE",
     width: "100%",
     height: "100%",
@@ -441,6 +384,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderRadius: 10,
   },
+  activeLanguage: {
+    backgroundColor: "#E8F5E9",
+    borderWidth: 1,
+    borderColor: "#A3C9A8",
+  },
   languageOptionText: {
     fontSize: 16,
     color: "#073D3D",
@@ -477,8 +425,12 @@ const styles = StyleSheet.create({
   },
 
   activeButton: {
-    backgroundColor: "#0A5F5F",
-    color: "#FFFFFF",
+    backgroundColor: "#E8F5E9",
+    borderWidth: 1,
+    borderColor: "#A3C9A8",
+  },
+  activeButtonText: {
+    color: "#073D3D",
   },
   notificationOption: {
     flexDirection: "row",
@@ -494,5 +446,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#073D3D",
     fontWeight: "500",
+    flex: 1,
   },
 });

@@ -1,3 +1,4 @@
+import { useLanguage } from "@/context/LanguageContext";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -10,30 +11,32 @@ interface SportsOption {
 }
 
 export default function Sports() {
+      const { language, setLanguage, t } = useLanguage();
+  
   const router = useRouter();
 
   const sportGroups: SportsOption[] = [
     {
       id: "1",
-      title: "Üst Bədən",
+      title: t.upperBody,
       icon: "arm-flex",
       route: "/sports-detail/upper-body",
     },
     {
       id: "2",
-      title: "Alt Bədən",
+      title: t.lowerBody,
       icon: "run",
       route: "/sports-detail/lower-body",
     },
     {
       id: "3",
-      title: "Kərə Əzələsi",
+      title: t.core,
       icon: "dumbbell",
       route: "/sports-detail/core",
     },
     {
       id: "4",
-      title: "Kardiyovaskulyar",
+      title: t.cardio,
       icon: "heart-pulse",
       route: "/sports-detail/cardio",
     },
@@ -46,7 +49,7 @@ export default function Sports() {
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons name="arrow-left" size={28} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>İdman Hərəkətləri</Text>
+        <Text style={styles.headerTitle}>{t.sportsExercises}</Text>
         <View style={{ width: 28 }} />
       </View>
 
